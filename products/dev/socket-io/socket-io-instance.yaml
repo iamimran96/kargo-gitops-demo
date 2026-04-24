@@ -2,7 +2,7 @@ apiVersion: kro.run/v1alpha1
 kind: SocketIOApp
 metadata:
   name: socket-io-dev
-  namespace: dev
+  namespace: socket-io
 spec:
   name: socket-io
   image: ximran96/node-socket:latest

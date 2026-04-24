@@ -31,7 +31,7 @@ spec:
         - uses: yaml-update
           as: update-image
           config:
-            path: ./src/products/dev/socket-io-instance.yaml
+            path: ./src/products/dev/socket-io/socket-io-instance.yaml
             updates:
               - key: spec.image
                 value: "${{ vars.imageRepo }}:${{ imageFrom(vars.imageRepo).Tag }}"
