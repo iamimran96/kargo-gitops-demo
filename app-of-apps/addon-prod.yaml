@@ -10,7 +10,7 @@ spec:
     targetRevision: HEAD
     path: addon/prod
   destination:
-    server: https://prod-control-plane:6443
+    server: https://kubernetes.default.svc
     namespace: argo-cd
   syncPolicy:
     automated:
