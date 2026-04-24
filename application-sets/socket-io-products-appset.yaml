@@ -13,10 +13,13 @@ spec:
         elements:
           - env: dev
             server: https://dev-control-plane:6443
+            namespace: socket-io
           - env: test
             server: https://test-control-plane:6443
+            namespace: socket-io
           - env: prod
             server: https://prod-control-plane:6443
+            namespace: socket-io
   template:
     metadata:
       name: socket-io-{{env}}
@@ -25,6 +28,8 @@ spec:
         app.kubernetes.io/component: socket-io
         app.kubernetes.io/managed-by: argocd
         environment: '{{env}}'
+      annotations:
+        kargo.akuity.io/authorized-stage: 'socket-io:{{env}}'
     spec:
       project: default
       source:
@@ -33,7 +38,7 @@ spec:
         path: products/{{env}}/socket-io
       destination:
         server: '{{server}}'
-        namespace: '{{env}}'
+        namespace: '{{namespace}}'
       syncPolicy:
         automated:
           prune: true

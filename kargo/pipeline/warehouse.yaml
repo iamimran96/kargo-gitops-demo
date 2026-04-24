@@ -1,0 +1,12 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: socket-io
+  namespace: socket-io
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  subscriptions:
+    - image:
+        repoURL: ximran96/node-socket
+        semverConstraint: "*"

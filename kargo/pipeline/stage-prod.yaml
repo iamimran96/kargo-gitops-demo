@@ -1,0 +1,55 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: prod
+  namespace: socket-io
+  labels:
+    environment: prod
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: socket-io
+      sources:
+        stages:
+          - test
+  promotionTemplate:
+    spec:
+      vars:
+        - name: gitRepo
+          value: https://github.com/iamimran96/kargo-gitops-demo.git
+        - name: imageRepo
+          value: ximran96/node-socket
+      steps:
+        - uses: git-clone
+          config:
+            repoURL: ${{ vars.gitRepo }}
+            checkout:
+              - branch: main
+                path: ./src
+        - uses: yaml-update
+          as: update-image
+          config:
+            path: ./src/products/prod/socket-io-instance.yaml
+            updates:
+              - key: spec.image
+                value: "${{ vars.imageRepo }}:${{ imageFrom(vars.imageRepo).Tag }}"
+        - uses: git-commit
+          as: commit
+          config:
+            path: ./src
+            message: |
+              prod: update socket-io image to ${{ imageFrom(vars.imageRepo).Tag }}
+        - uses: git-push
+          config:
+            path: ./src
+        - uses: argocd-update
+          config:
+            apps:
+              - name: socket-io-prod
+                namespace: argo-cd
+                sources:
+                  - repoURL: ${{ vars.gitRepo }}
+                    desiredRevision: ${{ outputs.commit.commit }}

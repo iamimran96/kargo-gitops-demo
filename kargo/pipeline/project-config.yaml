@@ -1,0 +1,13 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: ProjectConfig
+metadata:
+  name: socket-io
+  namespace: socket-io
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  promotionPolicies:
+    - stageSelector:
+        matchLabels:
+          environment: dev
+      autoPromotionEnabled: true
