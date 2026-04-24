@@ -1,27 +1,22 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kargo-pipeline
+  name: kargo-apps
   namespace: argo-cd
   labels:
     app.kubernetes.io/part-of: kargo-gitops-demo
-    app.kubernetes.io/component: kargo-pipeline
+    app.kubernetes.io/component: app-of-apps
     app.kubernetes.io/managed-by: argocd
-    environment: platform
 spec:
   project: default
   source:
     repoURL: https://github.com/iamimran96/kargo-gitops-demo.git
     targetRevision: HEAD
-    path: kargo/pipeline
+    path: kargo/apps
   destination:
     server: https://kubernetes.default.svc
-    namespace: socket-io
+    namespace: argo-cd
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - CreateNamespace=false
-      - ServerSideApply=true
-      - RespectIgnoreDifferences=true
