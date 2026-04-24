@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/<your-org>/Kargo-GitOps-Demo.git
+    repoURL: https://github.com/iamimran96/kargo-gitops-demo.git
     targetRevision: HEAD
     path: addon/charts/cert-manager
     helm:
