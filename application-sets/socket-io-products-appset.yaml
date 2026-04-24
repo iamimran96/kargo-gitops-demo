@@ -30,7 +30,7 @@ spec:
       source:
         repoURL: https://github.com/iamimran96/kargo-gitops-demo.git
         targetRevision: HEAD
-        path: products/{{env}}/socket-io-instance.yaml
+        path: products/{{env}}/socket-io
       destination:
         server: '{{server}}'
         namespace: '{{env}}'
