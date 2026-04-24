@@ -3,6 +3,11 @@ kind: Application
 metadata:
   name: cert-manager-dev
   namespace: argo-cd
+  labels:
+    app.kubernetes.io/part-of: kargo-gitops-demo
+    app.kubernetes.io/component: cert-manager
+    app.kubernetes.io/managed-by: argocd
+    environment: dev
 spec:
   project: default
   source:

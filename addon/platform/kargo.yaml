@@ -3,6 +3,11 @@ kind: Application
 metadata:
   name: kargo
   namespace: argo-cd
+  labels:
+    app.kubernetes.io/part-of: kargo-gitops-demo
+    app.kubernetes.io/component: kargo
+    app.kubernetes.io/managed-by: argocd
+    environment: platform
 spec:
   project: default
   source:

@@ -3,10 +3,15 @@ kind: Application
 metadata:
   name: addons-platform
   namespace: argo-cd
+  labels:
+    app.kubernetes.io/part-of: kargo-gitops-demo
+    app.kubernetes.io/component: app-of-apps
+    app.kubernetes.io/managed-by: argocd
+    environment: platform
 spec:
   project: default
   source:
-    repoURL: https://github.com/<your-org>/Kargo-GitOps-Demo.git
+    repoURL: https://github.com/iamimran96/kargo-gitops-demo.git
     targetRevision: HEAD
     path: addon/platform
   destination:
