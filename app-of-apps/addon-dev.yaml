@@ -6,11 +6,11 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/<your-org>/Kargo-GitOps-Demo.git
+    repoURL: https://github.com/iamimran96/kargo-gitops-demo.git
     targetRevision: HEAD
     path: addon/dev
   destination:
-    server: https://kubernetes.default.svc
+    server: https://dev-control-plane:6443
     namespace: argo-cd
   syncPolicy:
     automated:
