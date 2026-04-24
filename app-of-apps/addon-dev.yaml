@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: addons-dev
+  namespace: argo-cd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/<your-org>/Kargo-GitOps-Demo.git
+    targetRevision: HEAD
+    path: addon/dev
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argo-cd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

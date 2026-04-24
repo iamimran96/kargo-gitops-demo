@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kro-prod
+  namespace: argo-cd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/<your-org>/Kargo-GitOps-Demo.git
+    targetRevision: HEAD
+    path: addon/charts/kro
+  destination:
+    server: https://prod-control-plane:6443
+    namespace: kro
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

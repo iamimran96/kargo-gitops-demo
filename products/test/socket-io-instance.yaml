@@ -1,0 +1,12 @@
+apiVersion: v1alpha1
+kind: SocketIOApp
+metadata:
+  name: socket-io-test
+  namespace: test
+spec:
+  name: socket-io
+  image: ghcr.io/socketio/socket.io:latest
+  replicas: 2
+  port: 3500
+  servicePort: 80
+  serviceType: ClusterIP

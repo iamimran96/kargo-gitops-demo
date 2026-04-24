@@ -1,0 +1,63 @@
+apiVersion: kro.run/v1alpha1
+kind: ResourceGroup
+metadata:
+  name: socket-io
+spec:
+  schema:
+    apiVersion: v1alpha1
+    kind: SocketIOApp
+    spec:
+      name: string
+      image: string
+      replicas: integer | default=1
+      port: integer | default=3500
+      servicePort: integer | default=80
+      serviceType: string | default="ClusterIP"
+    status:
+      deploymentAvailable: ${deployment.status.availableReplicas}
+      serviceEndpoint: ${service.spec.clusterIP}
+
+  resources:
+    - id: deployment
+      template:
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: ${schema.spec.name}
+        spec:
+          replicas: ${schema.spec.replicas}
+          selector:
+            matchLabels:
+              app: ${schema.spec.name}
+          template:
+            metadata:
+              labels:
+                app: ${schema.spec.name}
+            spec:
+              containers:
+                - name: app
+                  image: ${schema.spec.image}
+                  ports:
+                    - containerPort: ${schema.spec.port}
+                  resources:
+                    requests:
+                      cpu: "100m"
+                      memory: "128Mi"
+                    limits:
+                      cpu: "500m"
+                      memory: "512Mi"
+
+    - id: service
+      template:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: ${schema.spec.name}
+        spec:
+          selector:
+            app: ${schema.spec.name}
+          type: ${schema.spec.serviceType}
+          ports:
+            - port: ${schema.spec.servicePort}
+              targetPort: ${schema.spec.port}
+              protocol: TCP
