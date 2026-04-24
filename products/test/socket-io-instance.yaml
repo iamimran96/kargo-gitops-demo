@@ -5,7 +5,7 @@ metadata:
   namespace: test
 spec:
   name: socket-io
-  image: ghcr.io/socketio/socket.io:latest
+  image: ximran96/node-socket:latest
   replicas: 2
   port: 3500
   servicePort: 80

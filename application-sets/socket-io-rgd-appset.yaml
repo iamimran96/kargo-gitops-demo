@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: socket-io-rgd
+  namespace: argo-cd
+  labels:
+    app.kubernetes.io/part-of: kargo-gitops-demo
+    app.kubernetes.io/component: socket-io-rgd
+    app.kubernetes.io/managed-by: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - env: dev
+            server: https://dev-control-plane:6443
+          - env: test
+            server: https://test-control-plane:6443
+          - env: prod
+            server: https://prod-control-plane:6443
+  template:
+    metadata:
+      name: socket-io-rgd-{{env}}
+      labels:
+        app.kubernetes.io/part-of: kargo-gitops-demo
+        app.kubernetes.io/component: socket-io-rgd
+        app.kubernetes.io/managed-by: argocd
+        environment: '{{env}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/iamimran96/kargo-gitops-demo.git
+        targetRevision: HEAD
+        path: kro
+      destination:
+        server: '{{server}}'
+        namespace: kro
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

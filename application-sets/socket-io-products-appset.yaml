@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: socket-io-products
+  namespace: argo-cd
+  labels:
+    app.kubernetes.io/part-of: kargo-gitops-demo
+    app.kubernetes.io/component: socket-io
+    app.kubernetes.io/managed-by: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - env: dev
+            server: https://dev-control-plane:6443
+          - env: test
+            server: https://test-control-plane:6443
+          - env: prod
+            server: https://prod-control-plane:6443
+  template:
+    metadata:
+      name: socket-io-{{env}}
+      labels:
+        app.kubernetes.io/part-of: kargo-gitops-demo
+        app.kubernetes.io/component: socket-io
+        app.kubernetes.io/managed-by: argocd
+        environment: '{{env}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/iamimran96/kargo-gitops-demo.git
+        targetRevision: HEAD
+        path: products/{{env}}/socket-io-instance.yaml
+      destination:
+        server: '{{server}}'
+        namespace: '{{env}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
