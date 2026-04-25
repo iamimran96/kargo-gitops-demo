@@ -78,7 +78,16 @@ helm install argocd argo/argo-cd \
   --wait
 ```
 
-### 3. Install Kargo
+### 3. Install cert-manager (required by Kargo)
+
+```bash
+helm install cert-manager jetstack/cert-manager \
+  --namespace cert-manager --create-namespace \
+  --set crds.enabled=true \
+  --wait
+```
+
+### 4. Install Kargo
 
 ```bash
 helm install kargo oci://ghcr.io/akuity/kargo-charts/kargo \
@@ -86,12 +95,13 @@ helm install kargo oci://ghcr.io/akuity/kargo-charts/kargo \
   --set controller.argocd.namespace=argo-cd \
   --set api.adminAccount.passwordHash='<bcrypt-hash>' \
   --set api.adminAccount.tokenSigningKey='<signing-key>' \
+  
   --wait
 ```
 
 > The management cluster (`kind-kargo`) is created manually. The setup script below only creates the workload clusters.
 
-### 4. Create workload clusters and register them with Argo CD
+### 5. Create workload clusters and register them with Argo CD
 
 ```bash
 bash argo-cd/setup.sh
@@ -99,7 +109,18 @@ bash argo-cd/setup.sh
 
 This creates the three workload clusters (dev, test, prod) and registers them with the Argo CD instance running on the management cluster.
 
-### 5. Bootstrap the app-of-apps
+#### How cluster registration works
+
+All four Kind clusters share the same Docker network, so they can reach each other using Docker DNS hostnames (e.g. `dev-control-plane`, `test-control-plane`). The `setup.sh` script does the following for each workload cluster:
+
+1. **Creates the Kind cluster** using the configs in `argo-cd/kind-clusters/` (each with a unique host API port: 6444, 6445, 6446).
+2. **Creates a ServiceAccount** (`argocd-manager`) with `cluster-admin` privileges on the workload cluster.
+3. **Extracts a bearer token** from the ServiceAccount Secret on the workload cluster.
+4. **Creates an Argo CD cluster Secret** on the management cluster (`kind-kargo`) containing the Docker-internal server URL (e.g. `https://dev-control-plane:6443`) and the bearer token.
+
+Argo CD discovers registered clusters by looking for Secrets labeled `argocd.argoproj.io/secret-type: cluster` in its namespace. This approach avoids using `argocd cluster add` and ensures the server URLs are reachable from within the Docker network rather than via `localhost` host ports.
+
+### 6. Bootstrap the app-of-apps
 
 ```bash
 kubectl apply -f app-of-apps/ --context kind-kargo
@@ -111,7 +132,7 @@ This deploys everything through GitOps:
 - ApplicationSets (RGD + product instances)
 - Kargo pipeline (Project, Warehouse, Stages)
 
-### 6. Set up Kargo git credentials
+### 7. Set up Kargo git credentials
 
 Kargo needs write access to push image updates to this repo:
 
@@ -129,7 +150,7 @@ kubectl label secret git-credentials \
   kargo.akuity.io/cred-type=git
 ```
 
-### 7. Push a new image to trigger a promotion
+### 8. Push a new image to trigger a promotion
 
 ```bash
 docker build -t ximran96/node-socket:1.0.0 .
