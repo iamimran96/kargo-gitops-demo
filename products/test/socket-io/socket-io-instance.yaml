@@ -5,7 +5,7 @@ metadata:
   namespace: socket-io
 spec:
   name: socket-io
-  image: ximran96/node-socket:2.0.0
+  image: ximran96/node-socket:3.0.0
   replicas: 2
   port: 3500
   servicePort: 80
