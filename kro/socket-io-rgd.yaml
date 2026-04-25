@@ -41,6 +41,18 @@ spec:
                   image: ${schema.spec.image}
                   ports:
                     - containerPort: ${schema.spec.port}
+                  livenessProbe:
+                    tcpSocket:
+                      port: ${schema.spec.port}
+                    initialDelaySeconds: 10
+                    periodSeconds: 15
+                    failureThreshold: 3
+                  readinessProbe:
+                    tcpSocket:
+                      port: ${schema.spec.port}
+                    initialDelaySeconds: 5
+                    periodSeconds: 10
+                    failureThreshold: 3
                   resources:
                     requests:
                       cpu: "100m"
