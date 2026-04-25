@@ -1,9 +1,21 @@
+# Dev Stage — receives Freight directly from the Warehouse.
+# Auto-promoted via ProjectConfig (no manual approval needed).
+#
+# Promotion steps:
+#   1. git-clone   — clone the GitOps repo (main branch)
+#   2. yaml-update — patch the dev instance image tag
+#   3. git-commit  — commit the change
+#   4. git-push    — push to remote (requires git-credentials Secret)
+#   5. argocd-update — tell Argo CD to sync the specific commit
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Stage
 metadata:
   name: dev
   namespace: socket-io
   labels:
+    app.kubernetes.io/part-of: kargo-gitops-demo
+    app.kubernetes.io/component: socket-io
+    app.kubernetes.io/managed-by: kargo
     environment: dev
   annotations:
     argocd.argoproj.io/sync-wave: "1"

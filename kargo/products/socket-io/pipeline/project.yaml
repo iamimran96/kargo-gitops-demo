@@ -1,6 +1,15 @@
+# Kargo Project for the socket-io application.
+# Creates the "socket-io" namespace and scopes all Kargo resources
+# (Warehouse, Stages, Freight) to this project.
+# Sync-wave "-1" ensures the project (and its namespace) is created
+# before any other pipeline resources.
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Project
 metadata:
   name: socket-io
+  labels:
+    app.kubernetes.io/part-of: kargo-gitops-demo
+    app.kubernetes.io/component: socket-io
+    app.kubernetes.io/managed-by: kargo
   annotations:
     argocd.argoproj.io/sync-wave: "-1"

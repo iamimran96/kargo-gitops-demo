@@ -1,9 +1,17 @@
+# Prod Stage — receives Freight that was verified in test.
+# Requires manual promotion via Kargo UI or CLI.
+# This is the final stage in the pipeline.
+#
+# Promotion steps are identical to dev/test but target the prod instance file.
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Stage
 metadata:
   name: prod
   namespace: socket-io
   labels:
+    app.kubernetes.io/part-of: kargo-gitops-demo
+    app.kubernetes.io/component: socket-io
+    app.kubernetes.io/managed-by: kargo
     environment: prod
   annotations:
     argocd.argoproj.io/sync-wave: "1"

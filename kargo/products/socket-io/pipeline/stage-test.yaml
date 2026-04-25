@@ -1,9 +1,16 @@
+# Test Stage — receives Freight that was verified in dev.
+# Requires manual promotion via Kargo UI or CLI.
+#
+# Promotion steps are identical to dev but target the test instance file.
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Stage
 metadata:
   name: test
   namespace: socket-io
   labels:
+    app.kubernetes.io/part-of: kargo-gitops-demo
+    app.kubernetes.io/component: socket-io
+    app.kubernetes.io/managed-by: kargo
     environment: test
   annotations:
     argocd.argoproj.io/sync-wave: "1"

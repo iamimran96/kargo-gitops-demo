@@ -1,8 +1,16 @@
+# ProjectConfig defines promotion policies for the socket-io project.
+# Auto-promotion is enabled only for the "dev" stage — when new Freight
+# is created by the Warehouse, it is automatically promoted to dev.
+# Test and prod stages require manual promotion via the Kargo UI or CLI.
 apiVersion: kargo.akuity.io/v1alpha1
 kind: ProjectConfig
 metadata:
   name: socket-io
   namespace: socket-io
+  labels:
+    app.kubernetes.io/part-of: kargo-gitops-demo
+    app.kubernetes.io/component: socket-io
+    app.kubernetes.io/managed-by: kargo
   annotations:
     argocd.argoproj.io/sync-wave: "0"
 spec:
